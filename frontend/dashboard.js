@@ -1,5 +1,6 @@
 // dashboard.js — fetches user stats from backend and displays personal dashboard
-const backendURL = "http://localhost:5000/api"; // change to deployed backend URL
+const backendURL = "https://leetcode-code-judge-backend.onrender.com/api";
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const userId = localStorage.getItem("userId");

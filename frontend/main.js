@@ -8,7 +8,8 @@ let appData = {
   currentScreen: "loginScreen",
   problems: [],
   currentProblem: null,
-  backendURL: "http://localhost:5000/api", // change to deployed URL later
+  backendURL: "https://leetcode-code-judge-backend.onrender.com/api",
+
 };
 
 document.addEventListener("DOMContentLoaded", function () {
