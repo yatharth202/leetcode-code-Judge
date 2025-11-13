@@ -246,14 +246,33 @@ async function fetchProblems() {
 ============================================================ */
 function openProblem(problem) {
   appData.currentProblem = problem;
+
   document.getElementById("problemName").textContent = problem.title;
-  document.getElementById("problemLevel").textContent = problem.difficulty;
   document.getElementById("problemText").innerHTML = `<p>${problem.description}</p>`;
+
+  // ⭐ APPLY DIFFICULTY COLOR ⭐
+  const level = document.getElementById("problemLevel");
+  level.textContent = problem.difficulty;
+
+  // reset classes
+  level.className = "levelTag";
+
+  // add correct tag color
+  if (problem.difficulty.toLowerCase() === "easy") {
+    level.classList.add("easyTag");
+  } else if (problem.difficulty.toLowerCase() === "medium") {
+    level.classList.add("mediumTag");
+  } else if (problem.difficulty.toLowerCase() === "hard") {
+    level.classList.add("hardTag");
+  }
+
   setDefaultCode();
   document.getElementById("resultsContent").innerHTML =
     "<p>Test your code to see results</p>";
+
   showScreen("codingScreen");
 }
+
 
 /* ============================================================
    🔹 Code Editor
