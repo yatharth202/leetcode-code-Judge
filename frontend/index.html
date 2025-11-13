@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodePractice App</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Make sure only one screen is visible at a time */
+    .screen {
+      display: none;
+    }
+    .screen.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="mainWrapper">
+    <!-- Top Navigation Bar -->
+    <div class="topBar">
+      <div class="siteName">
+        <span class="icon">💻</span>
+        <h1>CodePractice</h1>
+      </div>
+      <div id="userStuff" class="userStuff"></div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen show">
+      <div class="loginBox">
+        <div class="formCard">
+          <h2>Welcome Back</h2>
+          <p>Login to continue</p>
+          <form id="loginForm">
+            <div class="inputGroup">
+              <input type="email" id="userEmail" placeholder="Email" required />
+            </div>
+            <div class="inputGroup">
+              <input type="password" id="userPassword" placeholder="Password" required />
+            </div>
+            <button type="submit" class="mainBtn">Login</button>
+          </form>
+          <p class="switchText">
+            Don’t have an account? <a href="#" id="goToSignup">Sign up</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Signup Screen -->
+    <div id="signupScreen" class="screen">
+      <div class="loginBox">
+        <div class="formCard">
+          <h2>Create Account</h2>
+          <p>Join CodePractice today</p>
+          <form id="signupForm">
+            <div class="inputGroup">
+              <input type="text" id="fullName" placeholder="Full Name" required />
+            </div>
+            <div class="inputGroup">
+              <input type="email" id="newEmail" placeholder="Email" required />
+            </div>
+            <div class="inputGroup">
+              <input type="password" id="newPassword" placeholder="Password" required />
+            </div>
+            <div class="inputGroup">
+              <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+            </div>
+            <button type="submit" class="mainBtn">Sign Up</button>
+          </form>
+          <p class="switchText">
+            Already have an account? <a href="#" id="goToLogin">Login</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problems Screen -->
+    <div id="problemsScreen" class="screen">
+      <div class="contentArea">
+        <div class="welcomeMessage">
+          <h1>Practice Problems</h1>
+          <p>Choose a problem to start coding</p>
+        </div>
+        <div id="problemsList" class="problemsList"></div>
+      </div>
+    </div>
+
+    <!-- Coding Screen -->
+    <div id="codingScreen" class="screen">
+      <div class="contentArea">
+        <a href="#" id="goBack" class="goBack">← Back to Problems</a>
+        <div class="problemTop">
+          <h1 id="problemName"></h1>
+          <span id="problemLevel" class="levelTag"></span>
+        </div>
+        <div id="problemText" class="problemText"></div>
+
+        <div class="codingArea">
+          <div class="codeArea">
+            <div class="codeTop">
+              <select id="langPicker" class="langPicker">
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+              </select>
+              <div class="codeButtons">
+                <button id="clearCode" class="secondBtn">Reset</button>
+                <button id="testCode" class="secondBtn">Run Code</button>
+                <button id="sendCode" class="goodBtn">Submit</button>
+              </div>
+            </div>
+
+            <div class="editorBox">
+              <div class="lineCounter"></div>
+              <textarea id="codeBox"></textarea>
+            </div>
+          </div>
+
+          <div class="resultsBox">
+            <div class="resultsTop">
+              <h2>Results</h2>
+              <span id="resultTag" class="statusTag waitingTag">Not tested</span>
+            </div>
+            <div id="resultsContent">
+              <p>Test your code to see results</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bottomSection">
+      <div class="bottomContent">
+        <div class="bottomPart">
+          <h3>About</h3>
+          <ul>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="bottomPart">
+          <h3>Resources</h3>
+          <ul>
+            <li><a href="#">Docs</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyText">© 2025 CodePractice — All rights reserved</div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
