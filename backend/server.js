@@ -24,7 +24,7 @@ app.use(
     origin: [
       "http://127.0.0.1:5500",
       "http://localhost:5500",
-      "https://singular-douhua-97eb80.netlify.app"   // ✅ your real frontend URL
+      "relaxed-jalebi-b53953.netlify.app"   // ✅ your real frontend URL
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
