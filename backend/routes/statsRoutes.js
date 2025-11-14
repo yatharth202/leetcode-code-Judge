@@ -1,6 +1,3 @@
-// routes/statsRoutes.js
-// Provides user dashboard data: total solved, solved-by-difficulty,
-// total submissions, accuracy, and recent submissions.
 
 import express from "express";
 import Submission from "../models/Submission.js";
@@ -9,15 +6,11 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-/* ============================================================
-   🧠 GET /api/stats/:userId
-   Returns stats for the logged-in user
-============================================================ */
 router.get("/:userId", verifyToken, async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // 🟢 Fetch all submissions for this user (latest first)
+    
     const submissions = await Submission.find({ userId }).sort({ date: -1 }).lean();
 
     if (!submissions.length) {
@@ -31,7 +24,7 @@ router.get("/:userId", verifyToken, async (req, res) => {
       });
     }
 
-    // 🟣 Unique problems solved (passedAll true)
+   
     const solvedSet = new Set();
     for (const s of submissions) {
       if (s.passedAll) {
@@ -41,7 +34,7 @@ router.get("/:userId", verifyToken, async (req, res) => {
     }
     const totalSolved = solvedSet.size;
 
-    // 🟡 Difficulty-wise solved problems
+   
     const difficultyCounts = { easy: 0, medium: 0, hard: 0 };
     const counted = new Set();
     for (const s of submissions) {
@@ -54,14 +47,14 @@ router.get("/:userId", verifyToken, async (req, res) => {
       if (difficultyCounts[d] !== undefined) difficultyCounts[d]++;
     }
 
-    // 🔵 Accuracy = passedSubmissions / totalSubmissions
+   
     const totalSubmissions = submissions.length;
     const passedSubmissions = submissions.filter((s) => s.passedAll).length;
     const accuracy = totalSubmissions === 0
       ? 0
       : Math.round((passedSubmissions / totalSubmissions) * 100);
 
-    // 🟢 Recent submissions (limit 10)
+   
     const recent = submissions.slice(0, 10).map((s) => ({
       problemId: s.problemId || null,
       problemTitle: s.problemTitle,
@@ -73,7 +66,7 @@ router.get("/:userId", verifyToken, async (req, res) => {
       date: s.date,
     }));
 
-    // 🟢 Return clean structured data
+ 
     res.json({
       totalSolved,
       totalSubmissions,
@@ -84,7 +77,7 @@ router.get("/:userId", verifyToken, async (req, res) => {
     });
 
   } catch (err) {
-    console.error("❌ statsRoutes error:", err);
+    console.error("statsRoutes error:", err);
     res.status(500).json({ error: "Failed to load stats" });
   }
 });

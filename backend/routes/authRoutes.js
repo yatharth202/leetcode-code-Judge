@@ -5,9 +5,7 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
-/* ============================================================
-   🧩 SIGNUP — Create new user
-============================================================ */
+
 router.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -43,9 +41,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-/* ============================================================
-   🧩 LOGIN — Authenticate user & return JWT
-============================================================ */
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -64,15 +60,14 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // 🔥 FIX: your frontend expects "userId", not "id"
     const token = jwt.sign(
-      { userId: user._id, email: user.email },  // <-- FIXED
+      { userId: user._id, email: user.email }, 
       process.env.JWT_SECRET || "default_secret",
       { expiresIn: "7d" }
     );
 
     return res.status(200).json({
-      message: "✅ Login successful",
+      message: " Login successful",
       userId: user._id,
       name: user.name,
       email: user.email,

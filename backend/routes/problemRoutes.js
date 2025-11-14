@@ -5,11 +5,7 @@ import Problem from "../models/Problem.js";
 
 const router = express.Router();
 
-/* ============================================================
-   🧠 SEED Problems (auto-update if already exists)
-   - All test cases use a consistent shape: { input: "...", output: "..." }
-   - Call: GET /api/problems/seed
-============================================================ */
+
 router.get("/seed", async (req, res) => {
   try {
     const problems = [
@@ -71,6 +67,35 @@ public:
           { input: "900090", output: "90009" }
         ],
       },
+        {
+          title: "Factor Count",
+          description: "Count the number of factors of a given number n.",
+          difficulty: "Easy",
+          exampleInput: "6",
+          exampleOutput: "4",
+          starterCode: `
+        class Solution {
+        public:
+            int countFactors(int n) {
+                // Write your code here
+            }
+        };
+          `,
+          testCases: [
+            { input: "1", output: "1" },
+            { input: "2", output: "2" },
+            { input: "3", output: "2" },
+            { input: "4", output: "3" },
+            { input: "5", output: "2" },
+            { input: "6", output: "4" },
+            { input: "10", output: "4" },
+            { input: "12", output: "6" },
+            { input: "16", output: "5" },
+            { input: "25", output: "3" }
+          ]
+        },
+
+
 
       // 3 Valid Parentheses
       {
@@ -100,6 +125,34 @@ public:
           { input: "\"]\"", output: "false" }
         ],
       },
+      {
+        title: "Sum of First N Natural Numbers",
+        description: "Find the sum of first n natural numbers.",
+        difficulty: "Easy",
+        exampleInput: "5",
+        exampleOutput: "15",
+        starterCode: `
+      class Solution {
+      public:
+          int sumNatural(int n) {
+              // Write your code here
+          }
+      };
+        `,
+        testCases: [
+          { input: "1", output: "1" },
+          { input: "2", output: "3" },
+          { input: "3", output: "6" },
+          { input: "4", output: "10" },
+          { input: "5", output: "15" },
+          { input: "6", output: "21" },
+          { input: "7", output: "28" },
+          { input: "8", output: "36" },
+          { input: "10", output: "55" },
+          { input: "20", output: "210" }
+        ]
+      },
+
 
       // 4 Palindrome Number
       {
@@ -305,7 +358,7 @@ public:
           { input: "\"Queue\"", output: "4" },
           { input: "\"xyz\"", output: "0" },
           { input: "\"Education\"", output: "5" },
-          { input: "\"AI and Data Science\"", output: "7" }
+          { input: "\"AI and Data Science\"", output: "8" }
         ],
       },
 
@@ -569,6 +622,62 @@ public:
           { input: "\"12345\"", output: "\"54321\"" }
         ],
       },
+      {
+            title: "Prime Numbers in Range",
+            description: "Print all prime numbers in the given range 1 to n.",
+            difficulty: "Medium",
+            exampleInput: "10",
+            exampleOutput: "[2,3,5,7]",
+            starterCode: `
+          class Solution {
+          public:
+              vector<int> primeRange(int n) {
+                  // Write your code here
+              }
+          };
+            `,
+            testCases: [
+                { input: "1", output: "[]" },
+                { input: "2", output: "[2]" },
+                { input: "5", output: "[2,3,5]" },
+                { input: "10", output: "[2,3,5,7]" },
+                { input: "15", output: "[2,3,5,7,11,13]" },
+                { input: "20", output: "[2,3,5,7,11,13,17,19]" },
+                { input: "25", output: "[2,3,5,7,11,13,17,19,23]" },
+                { input: "30", output: "[2,3,5,7,11,13,17,19,23,29]" },
+                { input: "3", output: "[2,3]" },
+                { input: "4", output: "[2,3]" }
+            ]
+        },
+        {
+            title: "Longest Substring Without Repeating Characters",
+            description: "Find the length of the longest substring without repeating characters.",
+            difficulty: "Hard",
+            exampleInput: "\"abcabcbb\"",
+            exampleOutput: "3",
+            starterCode: `
+          class Solution {
+          public:
+              int lengthOfLongestSubstring(string s) {
+                  // Write your code here
+              }
+          };
+            `,
+            testCases: [
+              { input: "\"abcabcbb\"", output: "3" },
+              { input: "\"bbbbb\"", output: "1" },
+              { input: "\"pwwkew\"", output: "3" },
+              { input: "\"\"", output: "0" },
+              { input: "\"abcdef\"", output: "6" },
+              { input: "\"abba\"", output: "2" },
+              { input: "\"dvdf\"", output: "3" },
+              { input: "\"anviaj\"", output: "5" },
+              { input: "\"tmmzuxt\"", output: "5" },
+              { input: "\"aab\"", output: "2" }
+            ]
+          },
+
+
 
       // 20 Palindrome String
       {
@@ -600,7 +709,7 @@ public:
       }
     ];
 
-    // Upsert each problem by title — this will add new or update existing
+    // Upsert  problem by title
     for (const problem of problems) {
       await Problem.findOneAndUpdate(
         { title: problem.title },
@@ -609,40 +718,40 @@ public:
       );
     }
 
-    return res.json({ message: "✅ Problems seeded/updated successfully", count: problems.length });
+    return res.json({ message: "Problems seeded/updated successfully", count: problems.length });
   } catch (err) {
-    console.error("❌ Error seeding problems:", err);
+    console.error(" Error seeding problems:", err);
     return res.status(500).json({ message: "Error seeding problems", error: err.message });
   }
 });
 
-/* ============================================================
-   📚 Get all problems (with optional difficulty filter)
-============================================================ */
+/* 
+   Get all problems 
+ */
 router.get("/", verifyToken, async (req, res) => {
 
   try {
     const { difficulty } = req.query;
     let query = {};
-    if (difficulty) query.difficulty = new RegExp(`^${difficulty}$`, "i"); // case-insensitive
+    if (difficulty) query.difficulty = new RegExp(`^${difficulty}$`, "i"); 
     const problems = await Problem.find(query).sort({ difficulty: 1, title: 1 });
     res.json(problems);
   } catch (error) {
-    console.error("❌ Error fetching problems:", error);
+    console.error(" Error fetching problems:", error);
     res.status(500).json({ message: "Error fetching problems" });
   }
 });
 
-/* ============================================================
-   🔍 Get problem by ID
-============================================================ */
+/* 
+    Get problem by ID
+ */
 router.get("/:id", async (req, res) => {
   try {
     const problem = await Problem.findById(req.params.id);
     if (!problem) return res.status(404).json({ message: "Problem not found" });
     res.json(problem);
   } catch (error) {
-    console.error("❌ Error fetching problem by ID:", error);
+    console.error("Error fetching problem by ID:", error);
     res.status(500).json({ message: "Error fetching problem" });
   }
 });

@@ -333,7 +333,7 @@ async function runMyCode(isSubmit) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`  // 🔐 JWT required
+          "Authorization": `Bearer ${token}` // 🔐 JWT required
         },
         body: JSON.stringify({
           code,
@@ -395,11 +395,28 @@ async function runMyCode(isSubmit) {
           code,
           language,
           input: problem.exampleInput,
+
+          // ⭐⭐⭐ IMPORTANT FIX ⭐⭐⭐
+          problemTitle: problem.title
         }),
       });
 
       const data = await res.json();
-      resultsContent.innerHTML = `<pre>${data.output}</pre>`;
+
+      // Compare expected vs actual
+      const expected = String(problem.exampleOutput).trim();
+      const actual = String(data.output).trim();
+
+      if (expected === actual) {
+        resultsContent.innerHTML =
+          `<p style="color:green;">✔ Output matched expected example!</p>
+           <pre>${actual}</pre>`;
+      } else {
+        resultsContent.innerHTML =
+          `<p style="color:red;">✘ Output does NOT match expected result</p>
+           <p><b>Expected:</b> ${expected}</p>
+           <p><b>Your Output:</b> ${actual}</p>`;
+      }
     }
   } catch (err) {
     console.error(err);
@@ -413,20 +430,25 @@ async function runMyCode(isSubmit) {
 ============================================================ */
 function showTestResults(results) {
   const container = document.getElementById("resultsContent");
+
   container.innerHTML = results
-    .map(
-      (r) => `
-      <div class="resultCard ${r.passed ? "passed" : "failed"}">
-        <p><strong>Test ${r.caseNumber}:</strong> ${
-          r.passed ? "✅ Passed" : "❌ Failed"
-        }</p>
-        <p><b>Input:</b> ${r.input}</p>
-        <p><b>Expected:</b> ${r.expected}</p>
-        <p><b>Output:</b> ${r.userOutput}</p>
-      </div>`
-    )
+    .map(r => {
+      const icon = r.passed 
+        ? `<span style="color:#28a745; font-weight:bold; font-size:18px;">✔</span>` 
+        : `<span style="color:#dc3545; font-weight:bold; font-size:18px;">✘</span>`;
+
+      return `
+        <div class="resultCard ${r.passed ? "passed" : "failed"}">
+          <p><strong>Test ${r.caseNumber}:</strong> ${icon} ${r.passed ? "Passed" : "Failed"}</p>
+          <p><b>Input:</b> ${r.input}</p>
+          <p><b>Expected:</b> ${r.expected}</p>
+          <p><b>Your Output:</b> ${r.userOutput}</p>
+        </div>
+      `;
+    })
     .join("");
 }
+
 
 /* ============================================================
    🔹 App Start

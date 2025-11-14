@@ -20,7 +20,7 @@
     <!-- Top Navigation Bar -->
     <div class="topBar">
       <div class="siteName">
-        <span class="icon">💻</span>
+        <span class="icon"></span>
         <h1>CodePractice</h1>
       </div>
       <div id="userStuff" class="userStuff"></div>
@@ -100,12 +100,9 @@
         <div class="codingArea">
           <div class="codeArea">
             <div class="codeTop">
-              <select id="langPicker" class="langPicker">
-                <option value="cpp">C++</option>
-                <option value="java">Java</option>
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-              </select>
+      <div class="langPickerFixed">C++</div>
+    <input type="hidden" id="langPicker" value="cpp">
+
               <div class="codeButtons">
                 <button id="clearCode" class="secondBtn">Reset</button>
                 <button id="testCode" class="secondBtn">Run Code</button>

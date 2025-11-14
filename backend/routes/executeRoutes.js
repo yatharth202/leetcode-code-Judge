@@ -1,5 +1,4 @@
-// backend/routes/executeRoutes.js
-// Executes code using Piston API, runs testcases, and saves successful submissions.
+
 
 import express from "express";
 import axios from "axios";
@@ -11,10 +10,10 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// ✅ Piston API endpoint
+
 const PISTON_URL = "https://emkc.org/api/v2/piston/execute";
 
-// ✅ Supported languages & versions
+
 const langVersions = {
   cpp: { language: "cpp", version: "10.2.0" },
   java: { language: "java", version: "15.0.2" },
@@ -22,46 +21,52 @@ const langVersions = {
   javascript: { language: "javascript", version: "18.15.0" },
 };
 
-/* ============================================================
-   🧠 1. C++ Wrapper — Inserts main() automatically for testing
-============================================================ */
+
 function wrapCode(language, code, inputData = "", problemTitle = "") {
-  // Detect "Submit" mode automatically
+ 
   const isSubmit = inputData === "" || inputData === undefined || inputData === null;
 
   if (language !== "cpp") return code;
   const title = (problemTitle || "").toLowerCase();
 
-  // ✅ Two Sum
-  if (title.includes("two sum")) {
+  
+// Two Sum
+if (title.includes("two sum")) {
     let nums = "{2,7,11,15}";
     let target = 9;
+
     try {
-      const numsMatch = inputData.match(/\[(.*?)\]/);
-      const targetMatch = inputData.match(/target\s*=\s*(-?\d+)/);
-      if (numsMatch) nums = `{${numsMatch[1]}}`;
-      if (targetMatch) target = targetMatch[1];
+        const numsMatch = inputData.match(/\[(.*?)\]/);
+        const targetMatch = inputData.match(/target\s*=?\s*(-?\d+)/);
+        if (numsMatch) nums = `{${numsMatch[1]}}`;
+        if (targetMatch) target = targetMatch[1];
     } catch {}
 
     return `
 #include <bits/stdc++.h>
 using namespace std;
+
 ${code}
+
 int main() {
+    Solution obj;
     vector<int> nums = ${nums};
     int target = ${target};
-    vector<int> result = twoSum(nums, target);
+    vector<int> result = obj.twoSum(nums, target);
+
     if (!result.empty())
         cout << "[" << result[0] << "," << result[1] << "]";
     else
         cout << "[]";
+
     return 0;
 }`;
-  }
+}
 
 
-// ✅ Reverse Number (C++)
-// ✅ Reverse Number (C++ Class-based)
+
+
+
 if (title.toLowerCase().includes("reverse number")) {
   let n = 0;
   try {
@@ -84,7 +89,7 @@ int main() {
 }
 
 
-  // ✅ Valid Parentheses
+  //  Valid Parentheses
 if (title.includes("valid parentheses")) {
   let s = "()";
   try {
@@ -105,7 +110,7 @@ int main() {
 }`;
 }
 
-// ✅ Palindrome Number
+// Palindrome Number
 if (title.includes("palindrome number")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -121,7 +126,7 @@ int main() {
 }`;
 }
 
-// ✅ Fibonacci Number
+// Fibonacci Number
 if (title.includes("fibonacci number")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -137,7 +142,7 @@ int main() {
 }`;
 }
 
-// ✅ Factorial of N
+// Factorial of N
 if (title.includes("factorial")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -153,7 +158,7 @@ int main() {
 }`;
 }
 
-// ✅ Check Prime
+// Check Prime
 if (title.includes("check prime")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -169,7 +174,7 @@ int main() {
 }`;
 }
 
-// ✅ Power of Two
+// Power of Two
 if (title.includes("power of two")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -185,7 +190,7 @@ int main() {
 }`;
 }
 
-// ✅ Sum of Digits
+// Sum of Digits
 if (title.includes("sum of digits")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -201,20 +206,17 @@ int main() {
 }`;
 }
 
-// ✅ Count Vowels
-// ✅ Count Vowels (Fixed for exact output & Atlas data format)
+// Count Vowels
 if (title.includes("count vowels")) {
   let s = inputData.trim();
 
-  // 🧹 Remove wrapping quotes if present (e.g. "hello" → hello)
+
   if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
     s = s.slice(1, -1);
   }
-
-  // 🛠️ Escape double quotes for C++ string safety
   const escaped = s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 
-  // 🧠 Return proper executable C++ code for Piston
+
   return `
 #include <bits/stdc++.h>
 using namespace std;
@@ -230,7 +232,7 @@ int main() {
 }
 
 
-// ✅ Maximum Element in Array
+// Maximum Element in Array
 if (title.includes("maximum element in array")) {
   let nums = "{1,2,3}";
   try {
@@ -249,7 +251,7 @@ int main() {
 }`;
 }
 
-// ✅ GCD of Two Numbers
+//  GCD of Two Numbers
 if (title.includes("gcd of two numbers")) {
   let a = 0, b = 0;
   try {
@@ -268,7 +270,7 @@ int main() {
 }`;
 }
 
-// ✅ Armstrong Number
+// Armstrong Number
 if (title.includes("armstrong number")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -284,7 +286,7 @@ int main() {
 }`;
 }
 
-// ✅ Count Digits in a Number
+// Count Digits in a Number
 if (title.includes("count digits in a number")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -299,7 +301,7 @@ int main() {
 }`;
 }
 
-// ✅ Leap Year Checker
+//  Leap Year Checker
 if (title.includes("leap year checker")) {
   let year = 0;
   try { year = parseInt(inputData.trim()); } catch {}
@@ -315,7 +317,7 @@ int main() {
 }`;
 }
 
-// ✅ Even or Odd
+// Even or Odd
 if (title.includes("even or odd")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -330,7 +332,7 @@ int main() {
 }`;
 }
 
-// ✅ Sum of Array Elements
+// Sum of Array Elements
 if (title.includes("sum of array elements")) {
   let nums = "{1,2,3}";
   try {
@@ -349,7 +351,7 @@ int main() {
 }`;
 }
 
-// ✅ Count Words in String
+// Count Words in String
 if (title.includes("count words in string")) {
   let s = "";
   try {
@@ -369,7 +371,7 @@ int main() {
 }`;
 }
 
-// ✅ Reverse String
+// Reverse String
 if (title.includes("reverse string")) {
   let s = "";
   try {
@@ -389,7 +391,7 @@ int main() {
 }`;
 }
 
-// ✅ Palindrome String
+// Palindrome String
 if (title.includes("palindrome string")) {
   let s = "";
   try {
@@ -409,10 +411,12 @@ int main() {
 }`;
 }
 
-// ✅ Prime Numbers in Range
+
+// Prime Numbers in Range
 if (title.includes("prime numbers in range")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
+
   return `
 #include <bits/stdc++.h>
 using namespace std;
@@ -421,17 +425,18 @@ int main() {
     Solution obj;
     int n = ${n};
     vector<int> primes = obj.primeRange(n);
-    cout << "[";
+
     for (int i = 0; i < primes.size(); i++) {
         cout << primes[i];
         if (i + 1 < primes.size()) cout << ",";
     }
-    cout << "]";
+
     return 0;
 }`;
 }
 
-// ✅ Sum of First N Natural Numbers
+
+// Sum of First N Natural Numbers
 if (title.includes("sum of first n natural numbers")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -446,7 +451,10 @@ int main() {
 }`;
 }
 
-// ✅ Factor Count
+
+
+
+// Factor Count
 if (title.includes("factor count")) {
   let n = 0;
   try { n = parseInt(inputData.trim()); } catch {}
@@ -462,9 +470,33 @@ int main() {
 }
 
 
+// Longest Substring Without Repeating Characters
+if (title.includes("longest substring without repeating characters")) {
+  let s = inputData.trim();
+
+  if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+    s = s.substring(1, s.length - 1);
+  }
+
+  const escaped = s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+
+  return `
+#include <bits/stdc++.h>
+using namespace std;
+
+${code}
+
+int main() {
+    Solution obj;
+    string s = "${escaped}";
+    cout << obj.lengthOfLongestSubstring(s);
+    return 0;
+}`;
+}
 
 
-  // ✅ Default fallback
+
+  // Default
   return `
 #include <bits/stdc++.h>
 using namespace std;
@@ -475,15 +507,15 @@ int main() {
 }`;
 }
 
-/* ============================================================
-   🔹 Helper — Normalize output (removes spaces & newlines)
-============================================================ */
+/* 
+   removes spaces & newlines
+ */
 const normalize = (str = "") =>
   str.replace(/\s+/g, "").replace(/\r?\n|\r/g, "").trim();
 
-/* ============================================================
-   ▶️ 2. Run Code (Single execution for “Run Code”)
-============================================================ */
+/* 
+   Run Code
+*/
 router.post("/", verifyToken, async (req, res) => {
   const { language, code, input, problemTitle } = req.body;
 
@@ -502,14 +534,14 @@ router.post("/", verifyToken, async (req, res) => {
     const output = response?.data?.run?.output || "No output";
     res.json({ output: output.trim() });
   } catch (error) {
-    console.error("❌ Execution Error:", error.message);
+    console.error(" Execution Error:", error.message);
     res.status(500).json({ error: "Error executing code" });
   }
 });
 
-/* ============================================================
-   🧩 3. Run Test Cases (for “Submit”)
-============================================================ */
+/* 
+   Submit
+ */
 router.post("/testcases", verifyToken, async (req, res) => {
   const { language, code, testCases, problemTitle, userId, problemId } = req.body;
 
@@ -546,10 +578,10 @@ results.push({
 });
 
 
-      // Prevent Piston rate-limiting
+  
       await new Promise((r) => setTimeout(r, 120));
     } catch (err) {
-      console.error("❌ Testcase error:", err.message);
+      console.error("Testcase error:", err.message);
       results.push({
         caseNumber: i + 1,
         input: t.input,
@@ -560,9 +592,9 @@ results.push({
     }
   }
 
-  /* ============================================================
-     ✅ Save successful submissions to MongoDB
-  ============================================================= */
+  /*
+     successful submissions to MongoDB
+ */
   try {
     if (passed === testCases.length && userId) {
       const prob = problemId ? await Problem.findById(problemId).lean() : null;
@@ -579,13 +611,13 @@ results.push({
         code,
       });
 
-      // ✅ Add debug confirmation in terminal
-      console.log(`✅ Submission saved for user: ${userId}, problem: ${problemTitle}`);
+    
+      console.log(`Submission saved for user: ${userId}, problem: ${problemTitle}`);
     } else {
-      console.log("⚠️ Submission not saved — not all test cases passed or userId missing");
+      console.log(" Submission not saved — not all test cases passed or userId missing");
     }
   } catch (saveErr) {
-    console.error("❌ Failed to save submission:", saveErr.message);
+    console.error(" Failed to save submission:", saveErr.message);
   }
 
   res.json({ passed, total: testCases.length, results });
