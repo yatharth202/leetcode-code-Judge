@@ -17,14 +17,20 @@ const app = express();
 app.use(
   cors({
     origin: [
+      "https://relaxed-naiad-270eac.netlify.app",
       "http://127.0.0.1:5500",
       "http://localhost:5500",
-      "relaxed-jalebi-b53953.netlify.app"  
+      "http://localhost:5173"
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+// Preflight support
+app.options("*", cors());
+
 
 app.use(express.json());
 app.use("/api/auth", authRoutes);
